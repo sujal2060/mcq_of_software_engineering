@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MCQ App for BCA</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f0f8ff;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            width: 80%;
+            margin: 2rem auto;
+            background: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.1);
+        }
+        h1, h2 {
+            text-align: center;
+            color: #333;
+        }
+        .question {
+            margin: 20px 0;
+            padding: 30px;
+            background-color: #f7f9fc;
+            border-radius: 8px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.05);
+            font-size: 1.3rem;
+        }
+        .options {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+        }
+        .options label {
+            display: block;
+            margin: 10px;
+            font-size: 1.2rem;
+            width: 45%;
+        }
+        .answer {
+            display: none;
+            font-weight: bold;
+            color: #28a745;
+            margin-top: 10px;
+        }
+        button {
+            margin-top: 15px;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            cursor: pointer;
+            background-color: #007BFF;
+            color: white;
+            transition: background-color 0.3s;
+            font-size: 1rem;
+        }
+        button:hover {
+            opacity: 0.8;
+        }
+        .scores {
+            text-align: center;
+            margin-top: 30px;
+            font-size: 1.5rem;
+        }
+        .winner {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #28a745;
+        }
+        .tick {
+            color: green;
+            font-size: 1.5rem;
+        }
+        .cross {
+            color: red;
+            font-size: 1.5rem;
+        }
+        .button-container {
+            display: flex;
+            justify-content: space-around;
+        }
+        .button-container button {
+            padding: 8px 15px;
+            font-size: 1rem;
+        }
+        .view {
+            background-color: #28a745;
+            color: white;
+        }
+
+        /* Ensure text inside buttons is black after click */
+        .dynamic-btn.clicked {
+            color: black !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>MCQ App for BCA 4th Semester</h1>
+        <h2>Software Engineering Topics</h2>
+        <div id="questions"></div>
+        <div class="scores">
+            <h2>Scores</h2>
+            <p>Group A: <span id="scoreA">0</span></p>
+            <p>Group B: <span id="scoreB">0</span></p>
+            <button onclick="announceWinner()">Announce Winner</button>
+            <div id="winner" class="winner"></div>
+            <div id="loser" class="winner"></div> <!-- For displaying loser message -->
+        </div>
+    </div>
+
+    <script>
+        const mcqs = [
+            // Easy Questions (20)
+            { level: 'easy', question: "What is a software process?", options: ["Set of activities", "Documentation", "Coding", "Testing"], answer: "Set of activities" },
+            { level: 'easy', question: "What does a software process model represent?", options: ["Abstract process", "Real process", "Testing process", "Implementation"], answer: "Abstract process" },
+            { level: 'easy', question: "Which software process model follows a linear sequence?", options: ["Waterfall", "Spiral", "RAD", "Iterative"], answer: "Waterfall" },
+            { level: 'easy', question: "What is the purpose of process iteration?", options: ["Refinement", "Testing", "Implementation", "Deployment"], answer: "Refinement" },
+            { level: 'easy', question: "What is a key feature of Rapid Application Development (RAD)?", options: ["Prototyping", "Documentation", "Analysis", "Testing"], answer: "Prototyping" },
+            { level: 'easy', question: "What does CASE stand for?", options: ["Computer-Aided Software Engineering", "Component Analysis Software Engineering", "Case Analysis Software Engineering", "Continuous Agile Software Engineering"], answer: "Computer-Aided Software Engineering" },
+            { level: 'easy', question: "What is the main goal of Component-Based Software Engineering (CBSE)?", options: ["Reusability", "Flexibility", "Scalability", "Cost"], answer: "Reusability" },
+            { level: 'easy', question: "What is the first phase of the Waterfall Model?", options: ["Requirements", "Design", "Testing", "Implementation"], answer: "Requirements" },
+            { level: 'easy', question: "What type of lifecycle does the Spiral Model follow?", options: ["Iterative", "Waterfall", "Prototyping", "Incremental"], answer: "Iterative" },
+            { level: 'easy', question: "What does RUP stand for?", options: ["Rational Unified Process", "Rapid Unified Process", "Rational User Process", "Rapid User Process"], answer: "Rational Unified Process" },
+            { level: 'easy', question: "What is a core characteristic of Agile?", options: ["Iterative delivery", "Linear process", "Continuous testing", "Cost efficiency"], answer: "Iterative delivery" },
+            { level: 'easy', question: "What is an artifact in RUP?", options: ["Deliverable", "Prototype", "Test case", "Requirement"], answer: "Deliverable" },
+            { level: 'easy', question: "Which phase in RAD involves the creation of prototypes?", options: ["Construction", "Planning", "Design", "Deployment"], answer: "Construction" },
+            { level: 'easy', question: "What does the term 'process iteration' ensure?", options: ["Feedback", "Deployment", "Requirements gathering", "Testing"], answer: "Feedback" },
+            { level: 'easy', question: "In CBSE, what are the building blocks called?", options: ["Components", "Modules", "Packages", "Services"], answer: "Components" },
+            { level: 'easy', question: "What is the purpose of a feasibility study?", options: ["Evaluation", "Implementation", "Design", "Deployment"], answer: "Evaluation" },
+            { level: 'easy', question: "Which software model emphasizes risk analysis?", options: ["Spiral", "Waterfall", "RAD", "Agile"], answer: "Spiral" },
+            { level: 'easy', question: "What is a CASE tool used for?", options: ["Automation", "Documentation", "Design", "Testing"], answer: "Automation" },
+            { level: 'easy', question: "Which process model is best suited for small projects?", options: ["Agile", "Waterfall", "Spiral", "RAD"], answer: "Agile" },
+            { level: 'easy', question: "What is the primary focus of the V-Model?", options: ["Verification", "Testing", "Design", "Deployment"], answer: "Verification" },
+
+
+            // Medium Questions (10)
+            { level: 'medium', question: "What is a core objective of process models?", options: ["Simplification", "Testing", "Deployment", "Coding"], answer: "Simplification" },
+            { level: 'medium', question: "What is the deliverable of the design phase in Waterfall?", options: ["Design document", "Codebase", "Prototypes", "Test cases"], answer: "Design document" },
+            { level: 'medium', question: "Which RAD phase focuses on gathering user requirements?", options: ["Planning", "Construction", "Deployment", "Design"], answer: "Planning" },
+            { level: 'medium', question: "What is the key advantage of iterative processes?", options: ["Adaptability", "Cost reduction", "Faster coding", "Risk avoidance"], answer: "Adaptability" },
+            { level: 'medium', question: "What is a component in CBSE?", options: ["Modular unit", "Test case", "Service", "Prototypes"], answer: "Modular unit" },
+            { level: 'medium', question: "What is the main advantage of CASE tools?", options: ["Productivity", "Flexibility", "Reusability", "Speed"], answer: "Productivity" },
+            { level: 'medium', question: "Which RUP phase focuses on system architecture?", options: ["Elaboration", "Construction", "Inception", "Transition"], answer: "Elaboration" },
+            { level: 'medium', question: "What is the main risk in rapid prototyping?", options: ["Incompleteness", "Cost", "Flexibility", "Testing"], answer: "Incompleteness" },
+            { level: 'medium', question: "What type of lifecycle does RAD follow?", options: ["Incremental", "Iterative", "Waterfall", "Prototyping"], answer: "Incremental" },
+            { level: 'medium', question: "What is the primary goal of CBSE?", options: ["Cost reduction", "Reusability", "Scalability", "Speed"], answer: "Cost reduction" },
+
+            // Hard Questions (10)
+            { level: 'hard', question: "What is the role of a use case in RUP?", options: ["Scenario", "Design", "Testing", "Development"], answer: "Scenario" },
+            { level: 'hard', question: "What type of projects benefit most from RAD?", options: ["Time-sensitive", "High budget", "Long-term", "Complex"], answer: "Time-sensitive" },
+            { level: 'hard', question: "What is the primary focus of CASE tools?", options: ["Automation", "Testing", "Deployment", "Design"], answer: "Automation" },
+            { level: 'hard', question: "Which process model is best for high-risk projects?", options: ["Spiral", "Waterfall", "RAD", "Agile"], answer: "Spiral" },
+            { level: 'hard', question: "What is the purpose of risk management in RUP?", options: ["Mitigation", "Testing", "Prototyping", "Deployment"], answer: "Mitigation" },
+            { level: 'hard', question: "What is the key advantage of CBSE over traditional methods?", options: ["Scalability", "Speed", "Quality", "Reusability"], answer: "Scalability" },
+            { level: 'hard', question: "Which CASE tool supports code generation?", options: ["Forward engineering", "UML", "Database", "Scripting"], answer: "Forward engineering" },
+            { level: 'hard', question: "What is the output of the RUP construction phase?", options: ["System", "Design", "Prototype", "Code"], answer: "System" },
+            { level: 'hard', question: "What is an example of a CASE analysis tool?", options: ["Diagramming", "Code generation", "Testing", "Automation"], answer: "Diagramming" },
+            { level: 'hard', question: "What is the focus of RAD during the construction phase?", options: ["Prototypes", "Design", "Coding", "Testing"], answer: "Prototypes" }
+        ];
+
+        const questionsContainer = document.getElementById('questions');
+        let scoreA = 0, scoreB = 0;
+
+        function loadQuestions() {
+            mcqs.forEach((q, index) => {
+                const questionDiv = document.createElement('div');
+                questionDiv.classList.add('question');
+                questionDiv.innerHTML = `
+                    <p><strong>${index + 1}. ${q.question}</strong></p>
+                    <div class="options">
+                        <label><input type="radio" name="q${index}" value="${q.options[0]}" onclick="checkAnswer(this, '${q.answer}', ${index})"> ${q.options[0]}</label>
+                        <label><input type="radio" name="q${index}" value="${q.options[1]}" onclick="checkAnswer(this, '${q.answer}', ${index})"> ${q.options[1]}</label>
+                        <label><input type="radio" name="q${index}" value="${q.options[2]}" onclick="checkAnswer(this, '${q.answer}', ${index})"> ${q.options[2]}</label>
+                        <label><input type="radio" name="q${index}" value="${q.options[3]}" onclick="checkAnswer(this, '${q.answer}', ${index})"> ${q.options[3]}</label>
+                    </div>
+                    <div class="button-container">
+                        <button class="dynamic-btn" onclick="updateScore('correct', 'A', this)">Correct - Group A (2)</button>
+                        <button class="dynamic-btn" onclick="updateScore('pass', 'A', this)">Pass - Group A (1)</button>
+                        <button class="dynamic-btn" onclick="updateScore('none', 'A', this)">None - Group A (0)</button>
+                        <button class="dynamic-btn" onclick="updateScore('correct', 'B', this)">Correct - Group B (2)</button>
+                        <button class="dynamic-btn" onclick="updateScore('pass', 'B', this)">Pass - Group B (1)</button>
+                        <button class="dynamic-btn" onclick="updateScore('none', 'B', this)">None - Group B (0)</button>
+                    </div>
+                    <button class="view" onclick="toggleAnswer(this)">View Answer</button>
+                    <p class="answer">Answer: ${q.answer}</p>
+                `;
+                questionsContainer.appendChild(questionDiv);
+            });
+        }
+
+        function checkAnswer(selectedOption, correctAnswer, index) {
+            const allOptions = document.querySelectorAll(`input[name="q${index}"]`);
+            allOptions.forEach(option => {
+                option.disabled = true;
+                if (option.value === correctAnswer) {
+                    option.parentElement.classList.add('tick');
+                } else {
+                    option.parentElement.classList.add('cross');
+                }
+            });
+            if (selectedOption.value === correctAnswer) {
+                selectedOption.parentElement.classList.add('tick');
+            } else {
+                selectedOption.parentElement.classList.add('cross');
+            }
+        }
+
+        function updateScore(action, group, button) {
+            const groupScore = group === 'A' ? 'scoreA' : 'scoreB';
+            let color;
+            let points = 0;
+            if (action === 'correct') {
+                color = 'green';
+                points = 2;
+            } else if (action === 'pass') {
+                color = 'yellow';
+                points = 1;
+            } else {
+                color = 'red';
+                points = 0;
+            }
+
+            button.style.backgroundColor = color;
+            button.classList.add('clicked');  // Change text color to black when clicked
+            if (group === 'A') {
+                scoreA += points;
+            } else {
+                scoreB += points;
+            }
+
+            // Update the score dynamically
+            document.getElementById(`score${group}`).textContent = group === 'A' ? scoreA : scoreB;
+        }
+
+        function toggleAnswer(button) {
+            const answer = button.nextElementSibling;
+            if (answer.style.display === "none" || !answer.style.display) {
+                answer.style.display = "block";
+                button.textContent = "Hide Answer";
+            } else {
+                answer.style.display = "none";
+                button.textContent = "View Answer";
+            }
+        }
+
+        function announceWinner() {
+            const winner = scoreA > scoreB ? "Group A" : scoreB > scoreA ? "Group B" : "It's a Tie!";
+            const winnerMessage = winner === "Group A" ? "La Badhai xa Group A. Party chaiyo aba" : winner === "Group B" ? "La Badhai xa Group B. Party chaiyo aba" : "Taitttttttt";
+            document.getElementById("winner").textContent = winnerMessage;
+
+            if (winner !== "It's a Tie!") {
+                document.getElementById("loser").textContent = `Taitttttttt - ${winner === "Group A" ? "Group B" : "Group A"}`;
+            }
+        }
+
+        // Initialize questions
+        loadQuestions();
+    </script>
+</body>
+</html>
